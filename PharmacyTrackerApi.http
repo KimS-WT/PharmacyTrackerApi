@@ -1,0 +1,11 @@
+@PharmacyTrackerApi_HostAddress = http://localhost:5029
+
+GET {{PharmacyTrackerApi_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{PharmacyTrackerApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
