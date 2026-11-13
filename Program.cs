@@ -16,6 +16,10 @@ builder.Services.AddScoped<PharmacyTrackerApi.Services.PrescriptionService>();
 
 var app = builder.Build();
 
+DbInitializer.SeedData(app);
+
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
