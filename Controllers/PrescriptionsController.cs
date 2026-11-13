@@ -1,27 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
-using PharmacyTrackerApi.Data;
 using PharmacyTrackerApi.Models;
-using Microsoft.EntityFrameworkCore;
+using PharmacyTrackerApi.DTOs;
+using PharmacyTrackerApi.Services;
 
 namespace PharmacyTrackerApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PrescriptionController(PharmacyDbContext context) : ControllerBase
+public class PrescriptionsController(PrescriptionService service) : ControllerBase
 {
     // GET: api/Prescriptions
     [HttpGet]
     public async Task<ActionResult<List<Prescription>>> GetPrescriptions()
     {
-        return await context.Prescriptions.ToListAsync();
+        return Ok(await service.GetPrescriptionsAsync());
     }
 
     // POST: api/Prescriptions
     [HttpPost]
-    public async Task<ActionResult<Prescription>> CreatePrescription(Prescription rx)
+    public async Task<ActionResult<Prescription>> CreatePrescription(CreatePrescriptionDto dto)
     {
-        context.Prescriptions.Add(rx);
-        await context.SaveChangesAsync();
+        var rx = await service.CreatePrescriptionAsync(dto);
+        if (rx is null) return BadRequest("Patient does not exist. ");
         return CreatedAtAction(nameof(GetPrescriptions), new {id = rx.Id}, rx);
     }
 
@@ -29,11 +29,8 @@ public class PrescriptionController(PharmacyDbContext context) : ControllerBase
     [HttpPut("{id}/refill")]
     public async Task<IActionResult> RefillPrescription(int id)
     {
-        var rx = await context.Prescriptions.FindAsync(id);
-        if (rx is null) return NotFound();
-        if (rx.RefillsRemaining <= 0) return BadRequest("No refills remaining");
-        rx.RefillsRemaining--;
-        await context.SaveChangesAsync();
+        var rx = await service.RefillPrescriptionAsync(id);
+        if (rx is null) return BadRequest("No refills remaining");
         return Ok(rx);
     }
 }

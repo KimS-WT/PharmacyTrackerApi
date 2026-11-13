@@ -14,7 +14,9 @@ public class PatientsController(PharmacyDbContext context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Patient>>> GetPatients()
     {
-        return await context.Patients.ToListAsync();
+        return await context.Patients
+        .Include(p => p.Prescriptions) // Eager Loading- EF Core performs a SQL LEFT JOIN between Patients and Prescriptions, populating each patient's prescriptions array automatically in the JSON response(foreign key info is shown now)
+        .ToListAsync();
     }
 
     // POST: api/patients
