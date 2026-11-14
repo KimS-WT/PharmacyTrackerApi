@@ -10,7 +10,9 @@ public class PatientService(PharmacyDbContext context)
 {
     public async Task<List<Patient>> GetPatientsAsync()
     {
-        return await context.Patients.ToListAsync();
+        return await context.Patients
+        .Include(p => p.Prescriptions)
+        .ToListAsync();
     }
 
     public async Task<Patient?> CreatePatientAsync(CreatePatientDto dto)

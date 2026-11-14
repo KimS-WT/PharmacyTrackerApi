@@ -15,6 +15,14 @@ builder.Services.AddDbContext<PharmacyDbContext>(options =>
 builder.Services.AddScoped<PharmacyTrackerApi.Services.PrescriptionService>();
 builder.Services.AddScoped<PharmacyTrackerApi.Services.PatientService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReact", policy =>
+        policy.WithOrigins("http://localhost:5173") // React Ui
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 DbInitializer.SeedData(app);
@@ -31,6 +39,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("AllowReact");
 
 app.MapControllers();
 
