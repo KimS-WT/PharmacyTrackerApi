@@ -13,6 +13,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PharmacyDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<PharmacyTrackerApi.Services.PrescriptionService>();
+builder.Services.AddScoped<PharmacyTrackerApi.Services.PatientService>();
 
 var app = builder.Build();
 
